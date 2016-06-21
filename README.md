@@ -8,8 +8,8 @@ El siguiente proyecto es un Trial para Laudrive
  Sass
  Compass
 
- Para instalar el proyecto se requiere el comando
- (sudo) npm install
+ -Para instalar el proyecto se requiere el comando
+ --(sudo) npm install
 
-Para iniciar el proyecto se requiere el comando
-gulp serve
+-Para iniciar el proyecto se requiere el comando
+--gulp serve
