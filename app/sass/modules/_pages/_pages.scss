@@ -1,0 +1,14 @@
+#main{
+  .action-menu{
+    @include column(4);
+    float: left;
+    height: 100%;
+    background-color: #444;
+  }
+  #map-canvas {
+    @include column(18);
+    float: left;
+    height: 100%;
+    background-color: #fff !important;
+  }
+}

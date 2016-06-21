@@ -7,12 +7,9 @@
 	      	templateUrl: 'pages/home.html',
 	      	activetab: 'home',
 	      	controller: 'mainController'
-	    }).when('/acerca-de', {
-	      	templateUrl: 'pages/about.html',
-	      	activetab: 'about',
-	      	controller: 'aboutController'
 	    }).otherwise({ redirectTo: '/' });
     }]);
     app.controller('mainController', ['$scope', require('./controllers/mainController')]);
-    app.controller('aboutController', ['$scope', require('./controllers/aboutController')]);
+
+    app.directive('map', require('./directives/map'));
 })();

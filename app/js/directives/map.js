@@ -1,30 +1,3 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
-;(function(){
-	var app = angular.module('app', ['ngRoute', 'ngAnimate', 'ngTouch']);
-
-	app.config(['$routeProvider', function ($routeProvider) {
-		$routeProvider.when('/', {
-	      	templateUrl: 'pages/home.html',
-	      	activetab: 'home',
-	      	controller: 'mainController'
-	    }).otherwise({ redirectTo: '/' });
-    }]);
-    app.controller('mainController', ['$scope', require('./controllers/mainController')]);
-
-    app.directive('map', require('./directives/map'));
-})();
-},{"./controllers/mainController":2,"./directives/map":3}],2:[function(require,module,exports){
-/**
- * Created by @jose_farias on 21/06/16.
- * main controller
- */
- 'use strict';
-module.exports = function($scope){
-	console.log("I am doing something");
-};
-
-},{}],3:[function(require,module,exports){
 /**
  * Created by @monster_farias on 21/06/16.
  * Directiva para Google maps
@@ -200,4 +173,3 @@ module.exports = function($scope){
     }
   };
 };
-},{}]},{},[1]);
