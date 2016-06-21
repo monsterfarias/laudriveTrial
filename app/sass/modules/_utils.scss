@@ -1,0 +1,31 @@
+/**
+*
+* Utils
+*
+**/
+
+/*==========  VARIABLES  ==========*/
+
+  // Colors
+  $colorText: black;
+  // Defining font family
+  $fontDefault: Helvetica, Arial, sans-serif !default;
+  $fontHighlight: Helvetica, sans-serif !default;
+  //$fontIcon: 'icons' !default;
+
+  // Defining font sizes
+  $fontSmall: 13px !default;
+  $fontBase: 16px  !default;
+  $fontMedium: 20px !default;
+  $fontLarge: 26px !default;
+  $fontXLarge: 42px !default;
+  $fontXXLarge: 68px !default;
+  $fontHuge: 110px !default;
+
+  // Defining animation easings
+  $animationEasing: cubic-bezier(0.455, 0.030, 0.515, 0.955) !default;
+
+
+/*==========  MIXINS  ==========*/
+
+ 
