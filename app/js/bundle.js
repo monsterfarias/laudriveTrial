@@ -1,7 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 ;(function(){
-	var app = angular.module('app', ['ngRoute', 'ngAnimate', 'ngTouch']);
+	var app = angular.module('app', ['ngRoute', 'ngAnimate', 'ngTouch', 'ngStorage']);
 
 	app.config(['$routeProvider', function ($routeProvider) {
 		$routeProvider.when('/', {
@@ -11,11 +11,12 @@
 	    }).otherwise({ redirectTo: '/' });
     }]);
     app.controller('mainController', ['$scope', '$http', '$httpParamSerializerJQLike', require('./controllers/mainController')]);
-    app.controller('menuController', ['$scope', '$http', '$httpParamSerializerJQLike', require('./controllers/menuController')]);
+    app.controller('menuController', ['$scope', '$http', '$httpParamSerializerJQLike', '$localStorage', require('./controllers/menuController')]);
+    app.controller('storageController', ['$scope', '$localStorage', require('./controllers/storageController')]);
     app.directive('map', require('./directives/map'));
     app.directive('routes', require('./directives/routes'));
 })();
-},{"./controllers/mainController":2,"./controllers/menuController":3,"./directives/map":4,"./directives/routes":5}],2:[function(require,module,exports){
+},{"./controllers/mainController":2,"./controllers/menuController":3,"./controllers/storageController":4,"./directives/map":5,"./directives/routes":6}],2:[function(require,module,exports){
 /**
  * Created by @jose_farias on 21/06/16.
  * main controller
@@ -30,25 +31,69 @@ module.exports = function($scope, $http, $httpParamSerializerJQLike){
 
 'use strict';
 
-module.exports = function($scope, $http,$httpParamSerializerJQLike){
+module.exports = function($scope, $http,$httpParamSerializerJQLike, $localStorage){
 
     $scope.searchActive = 'active';
     $scope.historyActive = '';
-    $scope.perfilActive = '';
+
+    $scope.routes = localStorage.getItem('routes');
+    $scope.list = JSON.parse($scope.routes);
 
 
-    $scope.open = function open(e, className){
+    $scope.open = function open(e, className, section){
         e.preventDefault();
-         $scope.searchActive = 'active';
+        switch(section) {
+            case 'searchActive':
+                $scope.historyActive = '';
+                $scope.searchActive = 'active';
+                //console.log(JSON.parse(localStorage.getItem('routes')));
+                $scope.routes = localStorage.getItem('routes');
+                $scope.list = JSON.parse($scope.routes);
+                break;
+            case 'historyActive':
+                $scope.historyActive = 'active';
+                $scope.searchActive = '';
+                //console.log(JSON.parse(localStorage.getItem('routes')));
+                $scope.routes = localStorage.getItem('routes');
+                $scope.list = JSON.parse($scope.routes);
+                break;
+        }
+        $(".menu").removeClass("active");
         $("."+className).addClass("active");
     };
-    $scope.close = function close(e, className){
+    $scope.close = function close(e, className, section){
+        switch(section) {
+            case 'searchActive':
+                $scope.historyActive = '';
+                $scope.searchActive = '';
+                //console.log(JSON.parse(localStorage.getItem('routes')));
+                $scope.routes = localStorage.getItem('routes');
+                $scope.list = JSON.parse($scope.routes);
+                break;
+            case 'historyActive':
+                $scope.historyActive = '';
+                $scope.searchActive = '';
+                //console.log(JSON.parse(localStorage.getItem('routes')));
+                $scope.routes = localStorage.getItem('routes');
+                $scope.list = JSON.parse($scope.routes);
+                break;
+        }
         $("."+className).removeClass("active");
     };
     
 };
 
 },{}],4:[function(require,module,exports){
+
+'use strict';
+
+module.exports = function($scope, $localStorage){
+	var _this = this;
+	
+    
+};
+
+},{}],5:[function(require,module,exports){
 /**
  * Created by @monster_farias on 21/06/16.
  * Directiva para Google maps
@@ -216,8 +261,28 @@ module.exports = function($scope, $http,$httpParamSerializerJQLike){
         var directionsDisplay = new google.maps.DirectionsRenderer();
         var directionsService = new google.maps.DirectionsService();
 
+        var routes = JSON.parse(localStorage.getItem('routes')) !== null? JSON.parse(localStorage.getItem('routes')): [];
+
         $("#generate-route").on("click", function(){
-          console.log(origen, destino);
+          //routes = JSON.parse(localStorage.getItem('routes'));
+          //console.log(JSON.parse(localStorage.getItem('routes')));
+          var hora = new Date();
+
+          routes.push({
+            origen: {
+              lat:origen.lat, 
+              lng:origen.lng
+            },
+            destino: {
+              lat:destino.lat, 
+              lng:destino.lng
+            },
+            hora:hora,
+            lugar: $("#pac-input").val()
+          });
+          localStorage.setItem('routes', JSON.stringify(routes));
+
+
           setMapOnAll(null);
           var request = {
             origin: origen,
@@ -236,6 +301,35 @@ module.exports = function($scope, $http,$httpParamSerializerJQLike){
                     alert("No existen rutas entre ambos puntos");
             }
           });
+        });
+
+        $(".list-route").on("click", function(e){
+          var currentDataContent= e.currentTarget;
+          var origenLat = $(currentDataContent).data("latorigen");
+          var origenLng= $(currentDataContent).data("lngorigen");
+          var destinoLat = $(currentDataContent).data("latdestino");
+          var destinoLng = $(currentDataContent).data("lngdestino");
+          console.log(origenLat, origenLng, destinoLat, destinoLng);
+
+          setMapOnAll(null);
+          var request = {
+            origin: {lat:origenLat,lng:origenLng},
+            destination: {lat:destinoLat,lng:destinoLng},
+            travelMode: google.maps.DirectionsTravelMode['DRIVING'],
+            unitSystem: google.maps.DirectionsUnitSystem['METRIC'],
+            provideRouteAlternatives: true
+          };
+
+          directionsService.route(request, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setMap(map);
+                directionsDisplay.setPanel($(".description-route").get(0));
+                directionsDisplay.setDirections(response);
+            } else {
+                    alert("No existen rutas entre ambos puntos");
+            }
+          });
+
         });
 
         //var lastMarker = new google.maps.LatLng(19.3905191,-99.4238161);
@@ -295,7 +389,7 @@ module.exports = function($scope, $http,$httpParamSerializerJQLike){
     }
   };
 };
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * Created by @monster_farias on 20/05/16.
  * Directiva para owl-carousel
@@ -308,6 +402,7 @@ module.exports = function() {
         scope : true,
         link: function (scope, element, attrs) {
             //console.log(element);
+            
         }
     };
 };

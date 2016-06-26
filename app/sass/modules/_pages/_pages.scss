@@ -134,6 +134,63 @@
         }
       }
     }
+
+    .content-history{
+      display: block;
+      @include column(7);
+      height: 100%;
+      left: -23%;
+      top: 0px;
+      position: absolute;
+      z-index: 80;
+      background-color: #5f5d5d;
+      @include transition-property(left);
+      @include transition-duration(300ms);
+      @include transition-timing-function(ease-in);
+      &.active{
+        left: 9%;
+      }
+      .closeSerach{
+        display: block;
+        float: right;
+        margin: 10px;
+        a{
+          display: block;
+          text-decoration: none;
+          color: #fff;
+          font-size: 25px;
+          cursor: pointer;
+        }
+      }
+      .block-list{
+        display: block;
+          width: 100%;
+          padding: 0px;
+          float: left;
+          height: 350px;
+          overflow-y: scroll;
+        .listing{
+          display: block;
+          margin: 0px;
+          padding: 0px;
+          list-style: none;
+          width: 100%;
+          float: left;
+          li{
+            .list-route{
+              display: block;
+              color: #aaa;
+              text-align: left;
+              font-size: 12px;
+              width: 100%;
+              padding: 10px;
+              border-bottom: 1px solid #404040;
+              cursor: pointer;
+            }
+          }  
+        }
+      }
+    }
     #map-canvas {
       @include column(20);
       float: left;

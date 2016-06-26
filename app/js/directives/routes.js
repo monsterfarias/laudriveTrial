@@ -10,6 +10,7 @@ module.exports = function() {
         scope : true,
         link: function (scope, element, attrs) {
             //console.log(element);
+            
         }
     };
 };

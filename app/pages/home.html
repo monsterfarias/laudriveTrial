@@ -1,11 +1,11 @@
 <div class="content" ng-controller="menuController">
 	<div class="action-menu" >
-		<a class="side-menu-tab" ng-class="searchActive" ng-click="open($event, 'content-actions')" href=""><i class="fa fa-search"></i><br>Buscar</a>
-		<a class="side-menu-tab" ng-class="historyActive" href=""><i class="fa fa-history"></i><br>Historial</a>
-		<a class="side-menu-tab" ng-class="perfilActive" href=""><i class="fa fa-user"></i><br>Perfil</a>
+		<a class="side-menu-tab" ng-class="searchActive" ng-click="open($event, 'content-actions', 'searchActive')" href=""><i class="fa fa-search"></i><br>Buscar</a>
+		<a class="side-menu-tab" ng-class="historyActive" ng-click="open($event, 'content-history', 'historyActive')" href="" id="open-history"><i class="fa fa-history"></i><br>Historial</a>
+		<!--<a class="side-menu-tab" ng-class="perfilActive" href=""><i class="fa fa-user"></i><br>Perfil</a>-->
 	</div>
-	<div class="content-actions" >
-		<span class="closeSerach"> <a href="" ng-click="close($event, 'content-actions')"><i class="fa fa-times-circle-o" aria-hidden="true"></i></a></span>
+	<div class="content-actions menu" >
+		<span class="closeSerach"> <a href="" ng-click="close($event, 'content-actions', 'searchActive')"><i class="fa fa-times-circle-o" aria-hidden="true"></i></a></span>
 		<div class="search-tool">
 			<input id="pac-input" class="controls" type="text" placeholder="Buscar">
 		</div>
@@ -14,6 +14,20 @@
 			<div class="description-route"></div>
 		</div>
 	</div>
-	
+	<div class="content-history menu">
+		<span class="closeSerach"> <a href="" ng-click="close($event, 'content-history', 'historyActive')"><i class="fa fa-times-circle-o" aria-hidden="true"></i></a></span>
+
+		<div class="block-list">
+			<ul class="listing">
+				<li ng-repeat="route in list track by $index">
+					<span class="list-route" data-latorigen="{{route.origen.lat}}" data-lngorigen="{{route.origen.lng}}" data-latdestino="{{route.destino.lat}}" data-lngdestino="{{route.destino.lng}}">{{route.lugar}}</span>
+				</li>
+			</ul>
+		</div>
+		
+
+
+	</div>
+
 	<div id="map-canvas" map></div>
 </div>

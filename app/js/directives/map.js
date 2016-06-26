@@ -165,8 +165,28 @@
         var directionsDisplay = new google.maps.DirectionsRenderer();
         var directionsService = new google.maps.DirectionsService();
 
+        var routes = JSON.parse(localStorage.getItem('routes')) !== null? JSON.parse(localStorage.getItem('routes')): [];
+
         $("#generate-route").on("click", function(){
-          console.log(origen, destino);
+          //routes = JSON.parse(localStorage.getItem('routes'));
+          //console.log(JSON.parse(localStorage.getItem('routes')));
+          var hora = new Date();
+
+          routes.push({
+            origen: {
+              lat:origen.lat, 
+              lng:origen.lng
+            },
+            destino: {
+              lat:destino.lat, 
+              lng:destino.lng
+            },
+            hora:hora,
+            lugar: $("#pac-input").val()
+          });
+          localStorage.setItem('routes', JSON.stringify(routes));
+
+
           setMapOnAll(null);
           var request = {
             origin: origen,
@@ -185,6 +205,35 @@
                     alert("No existen rutas entre ambos puntos");
             }
           });
+        });
+
+        $(".list-route").on("click", function(e){
+          var currentDataContent= e.currentTarget;
+          var origenLat = $(currentDataContent).data("latorigen");
+          var origenLng= $(currentDataContent).data("lngorigen");
+          var destinoLat = $(currentDataContent).data("latdestino");
+          var destinoLng = $(currentDataContent).data("lngdestino");
+          console.log(origenLat, origenLng, destinoLat, destinoLng);
+
+          setMapOnAll(null);
+          var request = {
+            origin: {lat:origenLat,lng:origenLng},
+            destination: {lat:destinoLat,lng:destinoLng},
+            travelMode: google.maps.DirectionsTravelMode['DRIVING'],
+            unitSystem: google.maps.DirectionsUnitSystem['METRIC'],
+            provideRouteAlternatives: true
+          };
+
+          directionsService.route(request, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setMap(map);
+                directionsDisplay.setPanel($(".description-route").get(0));
+                directionsDisplay.setDirections(response);
+            } else {
+                    alert("No existen rutas entre ambos puntos");
+            }
+          });
+
         });
 
         //var lastMarker = new google.maps.LatLng(19.3905191,-99.4238161);
