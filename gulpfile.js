@@ -94,7 +94,7 @@ gulp.task('css', function () {
     )
     //.pipe($.changed('css', {extension: '.scss'}))
     .pipe(sass({
-        compass:false
+        compass:true
       })
       .on('error', console.error.bind(console))
     )
@@ -112,7 +112,7 @@ gulp.task('css-serve', function () {
     )
     //.pipe($.changed('css', {extension: '.scss'}))
     .pipe(sass({
-        compass:false
+        compass:true
       })
       .on('error', console.error.bind(console))
     )

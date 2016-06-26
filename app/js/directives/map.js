@@ -91,14 +91,15 @@
       ];
       var map = "";
       var infowindow = "";
+      var markers = [];
       if(document.getElementById('map-canvas')){
-        google.load("maps", "3",{other_params:'sensor=[true]',callback:function(){loadMap();}});  
+        google.load("maps", "3",{other_params:'libraries=places',callback:function(){loadMap();}});  
       }
       function loadMap(){
         map = new google.maps.Map(document.getElementById('map-canvas'), {
-          center: {lat:19.318073, lng:-99.2217095},
+          center: {lat:19.3905191, lng:-99.4238161},
           styles: style,
-          zoom: 19
+          zoom: 5
         });
         infowindow = new google.maps.InfoWindow();
         map.setOptions({
@@ -109,67 +110,137 @@
           streetViewControl: false,
           rotateControl: false
         });
-        var lastMarker = new google.maps.LatLng(19.318073,-99.2217095);
-        placeMarker(lastMarker);
+
+        var origen = {lat:19.3905191, lng:-99.4238161};
+        var destino = {};
+
+
+        // CCrea un Serach box.
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+        /*map.addListener('bounds_changed', function() {
+          searchBox.setBounds(map.getBounds());
+        });*/
+
+        
+
+        // [START region_getplaces]
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function() {
+          var places = searchBox.getPlaces();
+          if (places.length == 0) {
+            return;
+          }
+          // Clear out the old markers.
+          /*markers.forEach(function(marker) {
+            marker.setMap(null);
+          });*/
+          markers = [];
+          // For each place, get the icon, name and location.
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+            // Create a marker for each place.
+            destino.lat=place.geometry.location.lat();
+            destino.lng=place.geometry.location.lng();
+            //console.log(place.geometry.location.lat(), place.geometry.location.lng());
+            //console.log(destino);
+            markers.push(new google.maps.Marker({
+              map: map,
+              title: place.name,
+              position: place.geometry.location
+            }));
+
+            if (place.geometry.viewport) {
+              // Only geocodes have viewport.
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+          map.fitBounds(bounds);
+        });
+
+        var directionsDisplay = new google.maps.DirectionsRenderer();
+        var directionsService = new google.maps.DirectionsService();
+
+        $("#generate-route").on("click", function(){
+          console.log(origen, destino);
+          setMapOnAll(null);
+          var request = {
+            origin: origen,
+            destination: destino,
+            travelMode: google.maps.DirectionsTravelMode['DRIVING'],
+            unitSystem: google.maps.DirectionsUnitSystem['METRIC'],
+            provideRouteAlternatives: true
+          };
+
+          directionsService.route(request, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setMap(map);
+                directionsDisplay.setPanel($(".description-route").get(0));
+                directionsDisplay.setDirections(response);
+            } else {
+                    alert("No existen rutas entre ambos puntos");
+            }
+          });
+        });
+
+        //var lastMarker = new google.maps.LatLng(19.3905191,-99.4238161);
+        //placeMarker(lastMarker);
+
+        // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            origen = pos;
+
+            infowindow.setPosition(pos);
+            var lastMarker = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+            placeMarker(lastMarker);
+            infowindow.setContent('Location found.');
+            map.setCenter(pos);
+            map.setZoom(17);
+            }, function() {
+              handleLocationError(true, infowindow, map.getCenter());
+            });
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infowindow, map.getCenter());
+        }
           
       }
+      var marker = null;
       function placeMarker(location) {
-        var marker = new google.maps.Marker({
+        marker = new google.maps.Marker({
           position: location,
           map: map
         });
       }
-      /*function initMap() {
-        var directionsService = new google.maps.DirectionsService;
-        var directionsDisplay = new google.maps.DirectionsRenderer;
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 6,
-          center: {lat: 41.85, lng: -87.65}
-        });
-        directionsDisplay.setMap(map);
 
-        document.getElementById('submit').addEventListener('click', function() {
-          calculateAndDisplayRoute(directionsService, directionsDisplay);
-        });
-      }*/
-
-      /*function calculateAndDisplayRoute(directionsService, directionsDisplay) {
-        var waypts = [];
-        var checkboxArray = document.getElementById('waypoints');
-        for (var i = 0; i < checkboxArray.length; i++) {
-          if (checkboxArray.options[i].selected) {
-            waypts.push({
-              location: checkboxArray[i].value,
-              stopover: true
-            });
-          }
+      function setMapOnAll(map) {
+        if(marker != null){
+          marker.setMap(map);
         }
-        directionsService.route({
-          origin: document.getElementById('start').value,
-          destination: document.getElementById('end').value,
-          waypoints: waypts,
-          optimizeWaypoints: true,
-          travelMode: google.maps.TravelMode.DRIVING
-        }, function(response, status) {
-          if(status === google.maps.DirectionsStatus.OK) {
-            directionsDisplay.setDirections(response);
-            var route = response.routes[0];
-            var summaryPanel = document.getElementById('directions-panel');
-            summaryPanel.innerHTML = '';
-            // For each route, display summary information.
-            for (var i = 0; i < route.legs.length; i++) {
-              var routeSegment = i + 1;
-              summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
-              '</b><br>';
-              summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
-              summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
-              summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
-            }
-          } else {
-            window.alert('Directions request failed due to ' + status);
-          }
-        });
-      }*/
+        if (markers.length > 0) {
+          markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
+        }
+      }
+
+      function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ? 'Error: The Geolocation service failed.' : 'Error: Your browser doesn\'t support geolocation.');
+      }
+      /*
+
+      
+    */
     }
   };
 };

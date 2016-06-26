@@ -1,4 +1,19 @@
-<div class="action-menu">
+<div class="content" ng-controller="menuController">
+	<div class="action-menu" >
+		<a class="side-menu-tab" ng-class="searchActive" ng-click="open($event, 'content-actions')" href=""><i class="fa fa-search"></i><br>Buscar</a>
+		<a class="side-menu-tab" ng-class="historyActive" href=""><i class="fa fa-history"></i><br>Historial</a>
+		<a class="side-menu-tab" ng-class="perfilActive" href=""><i class="fa fa-user"></i><br>Perfil</a>
+	</div>
+	<div class="content-actions" >
+		<span class="closeSerach"> <a href="" ng-click="close($event, 'content-actions')"><i class="fa fa-times-circle-o" aria-hidden="true"></i></a></span>
+		<div class="search-tool">
+			<input id="pac-input" class="controls" type="text" placeholder="Buscar">
+		</div>
+		<div class="content-route">
+			<input type="submit" class="generate-route" id="generate-route" value="Generar Ruta">
+			<div class="description-route"></div>
+		</div>
+	</div>
 	
+	<div id="map-canvas" map></div>
 </div>
-<div id="map-canvas" map></div>

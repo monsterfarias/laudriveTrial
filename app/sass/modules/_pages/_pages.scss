@@ -1,14 +1,144 @@
 #main{
-  .action-menu{
-    @include column(4);
-    float: left;
+  .content{
+    display: block;
+    width: 100%;
     height: 100%;
-    background-color: #444;
-  }
-  #map-canvas {
-    @include column(18);
-    float: left;
-    height: 100%;
-    background-color: #fff !important;
+    .action-menu{
+      @include column(2);
+      min-width: 80px;
+      float: left;
+      height: 100%;
+      background-color: #444;
+      position: relative;
+      z-index: 90;
+      a.side-menu-tab {
+        display: block;
+        color: #aaa;
+        text-align: center;
+        font-size: 12px;
+        width: 100%;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #404040;
+        i {
+          font-size: 2.5em;
+          padding-bottom: 10px;
+        }
+      }
+      .active {
+        color: #fff!important;
+        background-color: #14cba9;
+        border-bottom: 1px solid #0f9d82;
+        border-top: 1px solid #0f9d82;
+        border-right: 3px solid #0f9d82;
+      }
+    }
+    .content-actions{
+      display: block;
+      @include column(7);
+      height: 100%;
+      left: -23%;
+      top: 0px;
+      position: absolute;
+      z-index: 80;
+      background-color: #5f5d5d;
+      @include transition-property(left);
+      @include transition-duration(300ms);
+      @include transition-timing-function(ease-in);
+      &.active{
+        left: 9%;
+      }
+      .closeSerach{
+        display: block;
+        float: right;
+        margin: 10px;
+        a{
+          display: block;
+          text-decoration: none;
+          color: #fff;
+          font-size: 25px;
+          cursor: pointer;
+        }
+      }
+      .search-tool{
+        display: block;
+        width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+        .controls {
+          margin-top: 10px;
+          border: 1px solid transparent;
+          border-radius: 2px 0 0 2px;
+          box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          height: 32px;
+          outline: none;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        #pac-input {
+          background-color: #fff;
+          font-size: 15px;
+          font-weight: 300;
+          padding: 0 11px 0 13px;
+          text-overflow: ellipsis;
+          width: 100%;
+        }
+
+        #pac-input:focus {
+          border-color: #4d90fe;
+        }
+
+        .pac-container {
+        }
+
+        #type-selector {
+          color: #fff;
+          background-color: #4d90fe;
+          padding: 5px 11px 0px 11px;
+        }
+
+        #type-selector label {
+          font-size: 13px;
+          font-weight: 300;
+        }
+      }
+      .content-route{
+        display: block;
+        float: left;
+        margin-top: 20px;
+        width: 100%;
+        .generate-route{
+          width: 100%;
+          border-radius: 10px;
+          border:none;
+          min-height: 30px;
+          color: #fff!important;
+          background-color: #14cba9;
+          text-align: center;
+          font-size: 20px;
+          &:focus{
+            outline: 0;
+          }
+          &:active{
+            outline: 0;
+          }
+        }
+        .description-route{
+          display: block;
+          width: 100%;
+          padding: 20px;
+          float: left;
+          height: 350px;
+          overflow-y: scroll;
+        }
+      }
+    }
+    #map-canvas {
+      @include column(20);
+      float: left;
+      height: 100%;
+      background-color: #fff !important;
+    }
   }
 }
