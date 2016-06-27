@@ -4,11 +4,11 @@
 	var app = angular.module('app', ['ngRoute', 'ngAnimate', 'ngTouch', 'ngStorage']);
 
 	app.config(['$routeProvider', function ($routeProvider) {
-		$routeProvider.when('/', {
+		$routeProvider.when('/#', {
 	      	templateUrl: 'pages/home.html',
 	      	activetab: 'home',
 	      	controller: 'mainController'
-	    }).otherwise({ redirectTo: '/' });
+	    }).otherwise({ redirectTo: '/#' });
     }]);
     app.controller('mainController', ['$scope', '$http', '$httpParamSerializerJQLike', require('./controllers/mainController')]);
     app.controller('menuController', ['$scope', '$http', '$httpParamSerializerJQLike', '$localStorage', require('./controllers/menuController')]);
@@ -189,7 +189,7 @@ module.exports = function($scope, $localStorage){
       var infowindow = "";
       var markers = [];
       if(document.getElementById('map-canvas')){
-        google.load("maps", "3",{other_params:'libraries=places',callback:function(){loadMap();}});  
+        google.load("maps", "3",{other_params:'key=AIzaSyCn68DbULt9MIlczwMuRWVWCju7jmAID7w&libraries=places',callback:function(){loadMap();}});  
       }
       function loadMap(){
         map = new google.maps.Map(document.getElementById('map-canvas'), {

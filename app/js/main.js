@@ -3,11 +3,11 @@
 	var app = angular.module('app', ['ngRoute', 'ngAnimate', 'ngTouch', 'ngStorage']);
 
 	app.config(['$routeProvider', function ($routeProvider) {
-		$routeProvider.when('/', {
+		$routeProvider.when('/#', {
 	      	templateUrl: 'pages/home.html',
 	      	activetab: 'home',
 	      	controller: 'mainController'
-	    }).otherwise({ redirectTo: '/' });
+	    }).otherwise({ redirectTo: '/#' });
     }]);
     app.controller('mainController', ['$scope', '$http', '$httpParamSerializerJQLike', require('./controllers/mainController')]);
     app.controller('menuController', ['$scope', '$http', '$httpParamSerializerJQLike', '$localStorage', require('./controllers/menuController')]);
